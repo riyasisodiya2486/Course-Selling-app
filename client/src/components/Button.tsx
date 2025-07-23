@@ -7,13 +7,15 @@ interface ButtonProps{
     onClick?:()=> void;
     fullWidth?: boolean;
     loading?: boolean;
+    disabled?: boolean;
 }
 
 const variantClasses = {
     "primary":" bg-gradient-to-r from-[#a18cd1] to-[#fbc2eb] hover:via-purple-700 hover:to-blue-700 text-white transition-all duration-300 shadow-md",
-    "secondary":"bg-gradient-to-r from-pink-100 via-purple-100 to-blue-100 hover:from-pink-200 hover:via-purple-200 hover:to-blue-200 text-blue-900 transition-all duration-300 border border-blue-200",
+    "secondary": "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black transition-all duration-300 shadow-sm"
+
 }
-const defaultStyles = "font-bold px-4 py-2 rounded-2xl font-light flex items-center justify-center space-x-2";
+const defaultStyles = "font-bold px-4 py-2 rounded-2xl  flex items-center justify-center space-x-2";
 
 export function Button(props: ButtonProps){
 

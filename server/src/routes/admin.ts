@@ -74,7 +74,15 @@ router.post('/signin', async(req, res)=>{
         return;
     }
 
-    const token = jwt.sign({adminId: user._id}, JWT_SECRET)
+    const token = jwt.sign(
+        {
+            adminId: user._id,
+            username: user.username,
+            role:"admin"
+        },
+             JWT_SECRET,
+            {expiresIn: "1D"}
+    )
 
     res.json({
         msg: "successfully signed in",
@@ -85,6 +93,7 @@ router.post('/signin', async(req, res)=>{
 
 router.post('/createcourse', adminMiddleware, async(req, res)=>{
     const createPayload = req.body;
+    console.log(req.body);
     const parsedPayload = CourseSchema.safeParse(createPayload);
     if(!parsedPayload.success){
         res.status(403).json({
@@ -98,7 +107,7 @@ router.post('/createcourse', adminMiddleware, async(req, res)=>{
         description: createPayload.description,
         imgLink: createPayload.imgLink,
         price:createPayload.price,
-        createdBy: (req as any).adminId
+        createdBy: (req as any).user.adminId
     })
     res.json({
         msg: "course created successfully",
@@ -129,16 +138,22 @@ router.get('/course', adminMiddleware, async(req, res)=>{
     }
 })
 
+router.get('/mycourses', adminMiddleware, async (req, res) => {
+  const adminId = (req as any).user.adminId;
+  try {
+    const courses = await Course.find({ createdBy: adminId });
+    res.json({ courses });
+  } catch (err) {
+    res.status(500).json({ msg: "Internal server error" });
+  }
+});
+
 router.put('/updatecourse/:courseId', adminMiddleware, async(req, res)=>{
     const courseId = req.params.courseId;
     const updateData = req.body;
     
     try{
-        const updateCourse = await Course.findByIdAndUpdate({
-            courseId,
-            updateData
-        })
-
+        const updateCourse = await Course.findByIdAndUpdate(courseId, updateData, { new: true });
         if(!updateCourse){
             res.status(404).json({
                 msg: "course not found"

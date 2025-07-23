@@ -1,6 +1,5 @@
 import mongoose, { mongo } from 'mongoose'
 import dotenv from "dotenv";
-import { required } from 'zod/v4/core/util.cjs';
 dotenv.config();
 
 const MONGO_URI = process.env.MONGO_URI as string;
@@ -28,10 +27,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    purchasedCourses: {
+    purchasedCourses: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course'
-    }
+    }]
 },
     {timestamps: true})
 
@@ -55,9 +54,10 @@ const CourseSchema = new mongoose.Schema({
     title: String,
     description: String,
     imgLink: String,
-    price: String,
+    price: Number,
     createdBy: { 
-        type: mongoose.Schema.Types.ObjectId, ref: "Admin" 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Admin" 
     }},
     {timestamps:true})
 

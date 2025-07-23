@@ -3,7 +3,7 @@ import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import Dropdown from "../components/Dropdown";
 import { useRef, useState } from "react";
-import { BACKEND_URL } from "./config";
+import { BACKEND_URL } from "../utils/config";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -36,8 +36,10 @@ export function Signup() {
       });
       alert("Your account has been created!");
       navigate("/signin");
+      
     } catch (err) {
       console.log(err);
+      alert("invalid credentials or user alerady exist");
     } finally {
       setIsLoading(false);
     }
@@ -48,20 +50,20 @@ export function Signup() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2 }}
-      className="min-h-screen w-full flex flex-wrap bg-gradient-to-r from-[#a18cd1] to-[#efadff] relative overflow-hidden p-4 md:p-0"
+      className="min-h-screen w-full flex flex-wrap bg-gradient-to-r from-[#a18cd1] to-[#aa9bff] relative overflow-hidden p-10 pt-28 md:p-4"
     >
 
       <motion.div
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1.2 }}
-        className="relative  w-full md:w-9/12 rounded-3xl flex flex-col justify-center items-center text-center bg-white py-10 px-6 mt-4 md:mt-0 shadow-xl"
+        className="md:relative  w-full md:w-9/12 rounded-3xl flex flex-col justify-center items-center text-center bg-white py-10  px-6  shadow-xl"
       >
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 1 }}
-          className="absolute top-4 left-4 w-44"
+          className="absolute md:top-4 top-1 left-4 md:w-44"
         >
           <Dropdown
             label="Choose to Sign up as"

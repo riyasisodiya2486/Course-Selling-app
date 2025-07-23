@@ -3,6 +3,11 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
+interface AuthPayload {
+  adminId: string;
+  username: string;
+}
+
 export function adminMiddleware(req: Request, res: Response, next: NextFunction){
     const authHeader = req.headers.authorization;
 
@@ -13,20 +18,23 @@ export function adminMiddleware(req: Request, res: Response, next: NextFunction)
         return;
     }
 
-    try{
+     try {
         const token = authHeader.split(" ")[1];
-        const decoded = jwt.verify(token, JWT_SECRET) as {adminId: string };
+        const decoded = jwt.verify(token, JWT_SECRET) as AuthPayload;
 
-        if (decoded && decoded.adminId) {
-            (req as any).adminId = decoded.adminId;
-            next();
+        if (!decoded || !decoded.username || !decoded.adminId) {
+            return res.status(401).json({
+                msg: "Invalid token"
+            });
         }
-        else{
-            res.status(401).json({
-                msg: "unauthorized user"
-            })
-            return;
-        }
+
+        (req as any).user = {
+            adminId: decoded.adminId,
+            username: decoded.username
+        };
+
+        next();
+
     }catch(err){
         res.json({
             err

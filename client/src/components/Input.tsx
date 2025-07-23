@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface InputProp {
   placeholder: string;
   value?: any;

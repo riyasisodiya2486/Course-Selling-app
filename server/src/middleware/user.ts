@@ -3,6 +3,11 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
+interface AuthPayload {
+  userId: string;
+  username: string;
+}
+
 export function userMiddleware(req: Request, res: Response, next: NextFunction){
     const authHeader = req.headers.authorization;
 
@@ -13,20 +18,23 @@ export function userMiddleware(req: Request, res: Response, next: NextFunction){
         return;
     }
 
-    try{
+     try {
         const token = authHeader.split(" ")[1];
-        const decode = jwt.verify(token, JWT_SECRET) as {username: string};
+        const decoded = jwt.verify(token, JWT_SECRET) as AuthPayload;
 
-        if(decode && decode.username){
-            const username = decode.username;
-            next();   
+        if (!decoded || !decoded.username || !decoded.userId) {
+            return res.status(401).json({
+                msg: "Invalid token"
+            });
         }
-        else{
-            res.status(401).json({
-                msg: "unauthorized user"
-            })
-            return;
-        }
+
+        (req as any).user = {
+            userId: decoded.userId,
+            username: decoded.username
+        };
+
+        next();
+
     }catch(err){
         res.json({
             err

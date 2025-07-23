@@ -3,7 +3,7 @@ import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import Dropdown from "../components/Dropdown";
 import { useRef, useState } from "react";
-import { BACKEND_URL } from "./config";
+import { BACKEND_URL } from "../utils/config";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,13 +27,22 @@ export function Login() {
 
     setIsLoading(true);
     try {
-      await axios.post(BACKEND_URL + `/api/v1/${selectedOption}/signin`, {
+      const response = await axios.post(BACKEND_URL + `/api/v1/${selectedOption}/signin`, {
         username,
         password
       });
+      const token = response.data.token;
+      if (token) {
+        localStorage.setItem("token", token);
+        console.log("Token stored in localStorage:", localStorage.getItem("token"));
+      } else {
+      console.warn("Token is undefined in response");
+      }
+
       alert("Login successful!");
       navigate("/home");
     } catch (err) {
+      alert("invalid username or password");
       console.log(err);
     } finally {
       setIsLoading(false);
@@ -47,13 +56,13 @@ export function Login() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 1.2 }}
-        className="min-h-screen w-full flex flex-wrap bg-gradient-to-r from-[#a18cd1] to-[#fbc2eb] relative overflow-hidden p-4 md:p-0"
+        className="min-h-screen w-full flex flex-wrap bg-gradient-to-r from-[#a18cd1] to-[#fbc2eb] relative overflow-hidden p-4 md:p-4"
       >
         <motion.div
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1.2 }}
-          className="w-full md:w-1/4 py-10 px-7 text-white text-center md:text-left"
+          className="w-full md:w-1/4  py-10 px-7 text-white text-center md:text-left pb-0"
         >
           <p className="text-lg font-semibold">
             Ready to level up? Sign in and continue the journey!
