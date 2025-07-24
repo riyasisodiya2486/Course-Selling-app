@@ -1,10 +1,10 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "dist/app.js",
+  "main": "dist/api/index.js",
   "scripts": {
-    "build": "tsc -b",
-    "start": "node dist/app.js",
+    "build": "tsc",
+    "start": "node dist/api/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
   },
   "keywords": [],
@@ -12,7 +12,10 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "ts-node-dev": "^2.0.0"
+    "@types/node": "^24.1.0",
+    "@vercel/node": "^5.3.6",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
